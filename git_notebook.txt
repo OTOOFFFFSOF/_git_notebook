@@ -85,6 +85,49 @@ GIT命令
 ************************************************************
 
 
+三、远程仓库
+
+
+	1. 创建SSH Key		ssh-keygen -t rsa -C "youremail@example.com"	
+							//用户主目录下, 创建可以时一路回车
+							//id_rsa 是私钥, 不能泄露
+							//id_rsa.pub 是公钥
+	2. 把本地仓库的内容推送到GitHub
+	    关联				git remote add origin git@github.com:michaelliao/learngit.git
+							//origin 是远程仓库名的默认叫法
+							//https: 链接也可以
+	    第一次推送			git push -u origin master
+	    每次推送			git push origin master
+
+	3. 查看远程库			git remote -v
+	4. 解绑远程库			git remote rm origin
+
+	5. 从远程库克隆		git clone git@github.com:michaelliao/gitskills.git
+							//https: 链接也可以
+
+
+
+************************************************************
+
+
+四、分支管理
+
+
+
+
+
+************************************************************
+
+
+五、标签管理
+
+
+
+
+
+
+
+
 
 
 			
