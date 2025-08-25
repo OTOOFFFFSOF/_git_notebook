@@ -1,0 +1,110 @@
+GIT命令
+
+
+************************************************************
+
+
+〇、创建账号
+	1. 初始化用户名		git config --global user.name "your_username"
+	2. 初始化邮箱			git config --global user.email your_email@domain.com
+	3. 查看所有配置		git config --list
+
+
+
+
+************************************************************
+
+
+一、创建版本库
+
+
+	1. 创建空目录 			mkdir <filename>	//或直接在目录创建文件夹
+	2. 切换目录			cd <name>
+	3. 查看当前目录		pwd
+	4. 变git管理目录		git init
+	5. 显示目录			ls -ah
+
+	6. 文件添加			git add <filename>
+	7. 文件提交			git commit -m "<text>"
+
+	8. 查看状态			git status
+	9. 查看修改内容		git diff
+	
+
+
+************************************************************
+
+
+二、版本回退
+
+
+	1. 查看历史提交		git log
+						git log --pretty=oneline		
+							//一行输出
+							//输出的前边一大串数字是 commit id 
+	2. 查看命令			git reflog
+							//可以查询到移除项目的 commit id
+
+	3.版本回退
+	   回退到上一个版本		git reset --hard HEAD^
+							//HEAD 是当前版本, HEAD^ 是上一个版本, HEAD^^是上上个版本
+							//参数: 	--hard	会回退到上个版本的已提交状态，
+							//		--soft	会回退到上个版本的未提交状态，
+							//		--mixed	会回退到上个版本已添加但未提交的状态.
+	    移动到指定版本		git reset --hard <commit id>
+							//版本号写前几位就可以
+							//原理: 移动 HEAD 指针			
+	4. 将添加回退到工作区	git reset HEAD
+							//回退所有
+						git reset HEAD <filename>
+							//回退单个
+
+	
+
+		//工作区: 电脑里能看到的目录
+		//版本库: 分为暂存区和分支
+		//		暂存区: 添加未提交文件
+		//		分支: 已提交文件
+
+		//git管理的是修改, 每次修改, 如果不用git add到暂存区, 那就不会加入到commit中
+
+	5. 恢复到最新提交版本	git checkout -- <filename>
+							//若添加到暂存区, 则退回到上一次暂存的状态
+							//若未添加到暂存区, 则退回到上一次提交的状态
+							//git checkout <branchname> 是切换到另一分支
+		//丢弃修改添加到了暂存区的文件: 用命令 git reset HEAD <filename> 后丢弃
+	
+	6. 删除文件
+	    在工作区删除		rm <filename>		//或者直接手动删除
+	    在版本库中删除		git rm<filename>    	//删除后提交则彻底删除
+	 7.恢复删除的文件		git restore <filename>
+						git checkout -- <filename>	
+
+
+
+************************************************************
+
+
+
+
+			
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
