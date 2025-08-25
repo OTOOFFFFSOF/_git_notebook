@@ -204,28 +204,29 @@ GIT命令
 五、标签管理
 
 
+		//标签 tag 是一个让人容易记住的有意义的名字, 与某个 commit 绑在一起
+		//若某个 commit 同时出现在两个分支上, 这这两个分支上都可以看到这个标签
+
+	1. 创建标签				//不会自动推送到远程
+	    当前分支最新提交	git tag <tagname>
+	    历史版本			git tag <tagname> <commit-id>
+	    带有说明文字		git tag -a <tagname> -m "<text>" <commit-id>
+							// -a 指定标签名, -m 指定说明文字
+	2. 查看标签			git tag
+	3. 查看标签信息		git show <tagname>
+	4. 删除标签			
+	    本地				git tag -d <tagname>
+	    远程				git push origin :refs/tags/<tagname>
+	5. 推送到远程			
+	    某一个				git push origin <tagname>
+	    全部				git push origin --tags
 
 
 
+************************************************************
 
 
-
-
-
-			
-
-
-
-
-
-
-
-
-
-
-
-
-
+六、使用GitHub
 
 
 
