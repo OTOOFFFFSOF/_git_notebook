@@ -20,6 +20,7 @@ GIT命令
 
 	1. 创建空目录 			mkdir <filename>	//或直接在目录创建文件夹
 	2. 切换目录			cd <name>
+	    返回上一级目录		cd ..
 	3. 查看当前目录		pwd
 	4. 变成git管理目录		git init
 	5. 显示目录			ls -ah
@@ -39,9 +40,10 @@ GIT命令
 
 
 	1. 查看历史提交		git log
-						git log --pretty=oneline		
-							//一行输出
 							//输出的前边一大串数字是 commit id 
+		   后接参数				--pretty=oneline		//一行输出				
+								--graph				//显示分支合并图
+								--abbrev-commit		//缩写commit id
 	2. 查看命令			git reflog
 							//可以查询到移除项目的 commit id
 
@@ -71,7 +73,7 @@ GIT命令
 	5. 撤销修改			git checkout -- <filename>
 							//若该文件添加到暂存区, 则退回到上一次暂存的状态
 							//若该文件未添加到暂存区, 则退回到上一次提交的状态
-							//git checkout <branchname> 是切换到另一分支
+							//git checkout <branch-name> 是切换到另一分支
 		//丢弃修改添加到了暂存区的文件: 用命令 git reset HEAD <filename> 后丢弃
 	
 	6. 删除文件
@@ -99,11 +101,18 @@ GIT命令
 	    第一次推送			git push -u origin master	//master 为例的当前分支
 	    每次推送			git push origin master		
 
-	3. 查看远程库			git remote -v
+	3. 查看远程库			git remote
+						git remote -v		
+							//更详细, 显示的 fetch 是抓取权限, push 是推送权限
 	4. 解绑远程库			git remote rm origin
 
 	5. 从远程库克隆		git clone git@github.com:michaelliao/gitskills.git
 							//也可以使用 https: 链接
+	6. 基于远程库创建分支	git checkout -b dev origin/dev		//上一步之后使用
+	7. 链接本地与远程分支	git branch --set-upstream-to=origin/dev dev
+
+	8. 拉取				git pull <remote> <branchname>
+
 
 
 
@@ -113,6 +122,75 @@ GIT命令
 四、分支管理
 
 
+
+	1. 创建分支			git branch <branch-name>
+	2. 切换分支			git checkout <branch-name>
+						git switch <branch-name>
+	3. 创建并切换分支		git checkout -b <branch-name>
+						git switch -c <branch-name>
+	4. 查看分支			git branch
+
+	5. 合并分支			git merge <branch-name>
+							//将目标分支的工作成果合并到当前分支
+	    禁用 Fast forward	git merge --no-ff -m "<text>" <branch-name>
+		//合并时禁用 Fast forward 模式, git在 merge 时生成一个新的 commit ( 需加-m参数 )
+		//两分支分别有新的提交后合并冲突时, git会自动合并, 但需要手动修改文件后重新提交 
+
+		//分支策略 	master 分支非常稳定, 仅用于发布新版本, 不在上边干活
+		//			dev 分支干活, 每个人都有自己的分支, 不时往 dev 分支合并
+
+		//bug 分支	需要修复代号101的bug时, 可以创建一个分支 issue-101 来修复
+		//所有未提交的修改, 对于所有分支都是可见的, 并且这些修改最终会被某次提交所独占
+		//需要切换分支但当前分支无法提交时, 可使用 stash 功能储存工作现场
+	6. 储存功能
+	    储存工作现场		git stash
+						git stash push
+	    查看储存列表		git stash list
+	    恢复储存内容		git stash apply
+	    删除储存内容		git stash drop
+	    恢复储存内容并删除	git stash pop
+		//早期分支会有同样的bug, 可以切换到该分支后运行以下命令进行相同修改
+
+	7. 修复同样的 bug		git cherry-pick <commit id>	
+							//上面的 commit id 是 issue-101 提交时的 commit id
+
+	8. 删除分支			
+	    普通删除			git branch -d <branch-name>
+	    强制删除			git branch -D <branch-name>
+							//用于未合并的分支销毁修改删除
+
+		//master 分支		主分支
+		//dev 分支		开发分支
+		//bug 分支		修复 bug 用的分支
+		//feature 分支		添加新功能的分支
+
+		//多人协作
+		//	推送分支
+		//		master 分支要时刻同步
+		//		dev 分支要时刻同步
+		//		bug 分支若无人检查没有必要同步
+		//		feature 分支取决于是否合作开发
+		//	抓取分支
+		//	     1. clone 时默认情况下只能看到本地的 master 分支
+		//		 要在 dev 分支上开发, 就要创建远程 origin 的 dev 分支到本地
+		//			git checkout -b dev origin/dev
+		//		现在可以在 dev 上修改, 并不是吧 dev 分支 push 到远程
+		//	    2. 如果同事已经向 origin/dev 分支 push 了他的提交, 则对同样的文件做修改时, 
+		//		不可以直接 push , 而是先用 git pull 抓取最新的 origin/dev , 在本地解决完冲
+		//		突后再推送 
+		//		pull 前先链接
+		//			git branch --set-upstream-to=origin/dev dev
+		//		再 pull
+		//			git pull
+		//		本地手动解决合并冲突后, 提交, 再 push
+		//	工作模式
+		//		1. 尝试用 git push origin <branch-name> 推送自己的修改
+		//		2. 如果推送失败，则因为远程分支有更新，需要先用 git pull 试图合并
+		//		3. 如果合并有冲突，则解决冲突，并在本地提交；
+		//		4. 没有冲突或者解决掉冲突后，再用 git push origin <branch-name> 推送
+		//		5. 如果git pull提示no tracking information，则说明本地分支和远程分支的
+		//		链接关系没有创建，用命令
+		//		    git branch --set-upstream-to <branch-name> origin/<branch-name>
 
 
 
